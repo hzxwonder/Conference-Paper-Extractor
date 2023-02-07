@@ -17,7 +17,7 @@ def getHTMLText(url):
         r.encoding = r.apparent_encoding
         return r.text
     except:
-        print('Failed! Please check the conference name ,conference year and the keyword!')
+        print('Failed! Please check the conference name, conference year and the keyword!')
         return ''
 
 def writeToCsv(args,dicts):
@@ -47,8 +47,12 @@ if __name__ == '__main__':
     parser.add_argument('-k',"--keyword", type=str, default=None, help="the keyword filter, if None, save all the paper found.")
     args = parser.parse_args()
 
+    args.name = args.name.lower()
     print("Looking for papers from conferences {} {}, keyword: {}".format(args.name,args.time,args.keyword))
-    url = "https://dblp.org/db/conf/{}/{}{}.html".format(args.name,args.name,args.time)
+    if args.name == "neurips" or args.name == "nips":
+        url = "https://dblp.org/db/conf/nips/neurips{}.html".format(args.time)
+    else:
+        url = "https://dblp.org/db/conf/{}/{}{}.html".format(args.name,args.name,args.time)
     print("Parsing URL: {}".format(url))
     htmltext = getHTMLText(url)
     try:
@@ -65,18 +69,21 @@ if __name__ == '__main__':
         parse_html1 = etree.HTML(parse_html_str,HTMLParser())
         parse_content = parse_html1.xpath('//cite//span[@itemprop="name"]')
         parse_content = [parse_content[idx].text for idx in range(len(parse_content))]
-        if args.keyword:
-            paper_title = parse_content[-1].upper()
-            keyword = args.keyword.upper()
-            if paper_title.find(keyword) == -1:
-                # print(parse_content[-1])
-                continue
+        try:
+            if args.keyword:
+                paper_title = parse_content[-1].upper()
+                keyword = args.keyword.upper()
+                if paper_title.find(keyword) == -1:
+                    # print(parse_content[-1])
+                    continue
+                else:
+                    dic = {"title": parse_content[-1], "authors": parse_content[:-1]}
+                    dics.append(dic)
             else:
                 dic = {"title": parse_content[-1], "authors": parse_content[:-1]}
                 dics.append(dic)
-        else:
-            dic = {"title": parse_content[-1], "authors": parse_content[:-1]}
-            dics.append(dic)
+        except:
+            continue
 
     writeToCsv(args,dics)
     print("The number of Papers extracted: {}".format(len(dics)))
