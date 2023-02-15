@@ -6,7 +6,7 @@ from lxml import etree
 from lxml.etree import HTMLParser
 import argparse
 import os
-
+import re
 
 def getHTMLText(url):
     kv = {'user_agent':'Mozilla/5.0'}
@@ -28,7 +28,7 @@ def writeToCsv(args,dicts):
             os.mkdir(args.save_dir)
 
     if args.keyword:
-        file_path = os.path.join(args.save_dir,"{}_{}_{}.csv".format(args.name,args.time,args.keyword))
+        file_path = os.path.join(args.save_dir,"{}_{}_{}.csv".format(args.name,args.time,args.keyword.replace(',','&')))
     else:
         file_path = os.path.join(args.save_dir,"{}_{}.csv".format(args.name,args.time))
 
@@ -71,14 +71,18 @@ if __name__ == '__main__':
         parse_content = [parse_content[idx].text for idx in range(len(parse_content))]
         try:
             if args.keyword:
-                paper_title = parse_content[-1].upper()
-                keyword = args.keyword.upper()
-                if paper_title.find(keyword) == -1:
-                    # print(parse_content[-1])
-                    continue
-                else:
-                    dic = {"title": parse_content[-1], "authors": parse_content[:-1]}
-                    dics.append(dic)
+                # paper_title = parse_content[-1].upper().split(' ')
+                paper_title = re.split(r'\\.| |\\-|\\&',parse_content[-1].upper())
+                keywords = args.keyword.upper().split(",")
+                keywords = [keyword.strip() for keyword in keywords]
+                for keyword in keywords:
+                    if keyword not in paper_title:
+                        # print(parse_content[-1])
+                        continue
+                    else:
+                        dic = {"title": parse_content[-1], "authors": parse_content[:-1]}
+                        dics.append(dic)
+                        break
             else:
                 dic = {"title": parse_content[-1], "authors": parse_content[:-1]}
                 dics.append(dic)
