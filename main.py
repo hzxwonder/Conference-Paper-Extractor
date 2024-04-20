@@ -67,6 +67,7 @@ if __name__ == '__main__':
     for parse_xpath in tqdm(parse_xpaths):
         parse_html_str = etree.tostring(parse_xpath)
         parse_html1 = etree.HTML(parse_html_str,HTMLParser())
+        import pdb;pdb.set_trace()
         parse_content = parse_html1.xpath('//cite//span[@itemprop="name"]')
         parse_content = [parse_content[idx].text for idx in range(len(parse_content))]
         try:
