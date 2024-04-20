@@ -26,24 +26,21 @@ for file in os.listdir(root):
         # 为每篇论文创建 Markdown 格式的字符串并存储在列表中
         markdown_strings = []
         for j,paper in enumerate(data_batch):
-            try:
-                markdown_string = f"""## {[paper_idx]} {paper['Title'].replace('.', '') if ('.' in paper['Title'] and paper['Title'][-1]=='.')else paper['Title']}
+            markdown_string = f"""## {[paper_idx]} {paper['Title'].replace('.', '') if ('.' in paper['Title'] and paper['Title'][-1]=='.')else paper['Title']}
 
-        **Authors**: *{", ".join(paper['Authors'])}*
+**Authors**: *{", ".join(paper['Authors'])}*
 
-        **Conference**: *{paper['Conference']} {paper['Time']}*
+**Conference**: *{paper['Conference']} {paper['Time']}*
 
-        **URL**: [{paper['URL']}]({paper['URL']})
+**URL**: [{paper['URL']}]({paper['URL']})
 
-        **Abstract**:
+**Abstract**:
 
-        {paper['Abstract'].strip()}
+{paper['Abstract'].strip()}
 
-        ----
+----
 
-        """
-            except:
-                import pdb; pdb.set_trace()
+"""
             markdown_strings.append(markdown_string)
             paper_idx += 1
 
