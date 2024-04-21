@@ -29,7 +29,7 @@ def getHTMLText(url):
     
 if __name__ == '__main__':
     name = 'icml'
-    conf_time_lst = [2023]
+    conf_time_lst = [2021]
     for conf_time in conf_time_lst:
         keyword = None
         print("Looking for papers from conferences {} {}, keyword: {}".format(name, conf_time, keyword))

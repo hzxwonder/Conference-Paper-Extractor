@@ -29,7 +29,7 @@ def getHTMLText(url):
     
 if __name__ == '__main__':
     name = 'aaai'
-    conf_time_lst = [2023]
+    conf_time_lst = [2022, 2024]
     for conf_time in conf_time_lst:
         keyword = None
         print("Looking for papers from conferences {} {}, keyword: {}".format(name, conf_time, keyword))
